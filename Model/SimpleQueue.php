@@ -68,7 +68,7 @@ class SimpleQueue {
 
 		if (empty($result)) {
 			CakeLog::error(
-				sprintf('Could not create background job for task %s and data %s', $taskName, $data),
+				sprintf('Could not create background job for task %s', $taskName),
 				array('sqs')
 			);
 			return false;
