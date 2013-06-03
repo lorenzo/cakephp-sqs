@@ -190,4 +190,25 @@ class SimpleQueueTest extends CakeTestCase {
 		$this->assertFalse($queue->send('foo', ['my' => 'data']));
 	}
 
+/**
+ * Tests send method with missing config for queue
+ *
+ * @expectedException InvalidArgumentException
+ * @expectedExceptionMessage foo URL was not configured. Use Configure::write(SQS.queue.foo, $url)
+ * @return void
+ */
+	public function testSendMissingConfig() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'wuut' => 'http://fake.local'
+			)
+		));
+		$queue = new SimpleQueue;
+		$queue->send('foo', ['my' => 'data']);
+	}
 }
