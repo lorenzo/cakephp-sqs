@@ -91,7 +91,7 @@ class SimpleQueue {
 		$url = $this->_taskURL($taskName);
 
 		try {
-			CakeLog::debug(sprintf('Creating %d background jobs: %s', count($payloads), $taskName), array('sqs'));
+			CakeLog::debug(sprintf('Creating %d messages in queue: %s', count($payloads), $taskName), array('sqs'));
 			$result = $this->client()->sendMessageBatch(array(
 				'QueueUrl' => $url,
 				'Entries' => array_map(function($e) use (&$i) {
@@ -99,7 +99,7 @@ class SimpleQueue {
 				}, $payloads)
 			));
 
-			$failed = [];
+			$failed = array();
 			foreach ((array)$result->get('Failed') as $f) {
 				$failed[(int)$f['Id']] = $f['Message'];
 			}

@@ -100,11 +100,11 @@ class SimpleQueueTest extends CakeTestCase {
 		$client->expects($this->once())->method('sendMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
-				'MessageBody' => json_encode(['my' => 'data'])
+				'MessageBody' => json_encode(array('my' => 'data'))
 			))
 			->will($this->returnValue($model));
 
-		$this->assertTrue($queue->send('foo', ['my' => 'data']));
+		$this->assertTrue($queue->send('foo', array('my' => 'data')));
 	}
 
 /**
@@ -143,11 +143,11 @@ class SimpleQueueTest extends CakeTestCase {
 		$client->expects($this->once())->method('sendMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
-				'MessageBody' => json_encode(['my' => 'data'])
+				'MessageBody' => json_encode(array('my' => 'data'))
 			))
 			->will($this->returnValue($model));
 
-		$this->assertFalse($queue->send('foo', ['my' => 'data']));
+		$this->assertFalse($queue->send('foo', array('my' => 'data')));
 	}
 
 /**
@@ -183,11 +183,11 @@ class SimpleQueueTest extends CakeTestCase {
 		$client->expects($this->once())->method('sendMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
-				'MessageBody' => json_encode(['my' => 'data'])
+				'MessageBody' => json_encode(array('my' => 'data'))
 			))
 			->will($this->throwException(new Exception('you fail')));
 
-		$this->assertFalse($queue->send('foo', ['my' => 'data']));
+		$this->assertFalse($queue->send('foo', array('my' => 'data')));
 	}
 
 /**
@@ -209,6 +209,53 @@ class SimpleQueueTest extends CakeTestCase {
 			)
 		));
 		$queue = new SimpleQueue;
-		$queue->send('foo', ['my' => 'data']);
+		$queue->send('foo', array('my' => 'data'));
 	}
+
+/**
+ * Tests sendBatch method
+ *
+ * @return void
+ */
+	public function testSendBatch() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('sendMessageBatch'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+
+		$this->logger->expects($this->at(0))
+			->method('write')
+			->with('debug', 'Creating 2 messages in queue: foo');
+
+		$model = $this->getMock('\Guzzle\Service\Resource\Model');
+		$model->expects($this->once())->method('get')
+			->with('Failed')
+			->will($this->returnValue(null));
+
+		$client->expects($this->once())->method('sendMessageBatch')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+				'Entries' => array(
+					array('Id' => 'a', 'MessageBody' => json_encode(array(1))),
+					array('Id' => 'a1', 'MessageBody' => json_encode(array(2))),
+				)
+			))
+			->will($this->returnValue($model));
+
+		$data = array(
+			array(1),
+			array(2)
+		);
+		$this->assertEquals(array(), $queue->sendBatch('foo', $data));
+	}
+
 }
