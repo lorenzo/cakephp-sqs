@@ -1,0 +1,17 @@
+{
+    "name": "lorenzo/cakephp-sqs",
+    "description": "CakePHP Aws Simple Queue System",
+    "type": "cakephp-plugin",
+    "keywords": ["cakephp", "queue", "aws", "sqs"],
+    "homepage": "https://github.com/lorenzo/cakephp-sqs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "José Lorenzo Rodríguez",
+            "role": "Author"
+        }
+    ],
+    "require": {
+        "aws/aws-sdk-php": "2.*"
+    }
+}
