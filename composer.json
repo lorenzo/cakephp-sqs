@@ -12,6 +12,7 @@
         }
     ],
     "require": {
+        "composer/installers": "*",
         "aws/aws-sdk-php": "2.*"
     }
 }
