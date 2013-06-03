@@ -64,7 +64,7 @@ class SimpleQueue {
 			$result = $this->client()->sendMessage(array(
 				'QueueUrl' => $url,
 				'MessageBody' => $data
-			));
+			))->get('MessageId');
 		} catch (Exception $e) {
 			CakeLog::error($e->getMessage(), 'sqs');
 			$result = false;
@@ -89,7 +89,7 @@ class SimpleQueue {
  * @param string $taskName a task name as defined in the configure key SQS.queues
  * @param array $payloads list of payload data to associate to the new queued message
  * for each entry in the array a new message in the queue will be created
- * @return boolean success
+ * @return array list of messages that failed to be sent or false if an exception was caught
  **/
 	public function sendBatch($taskName, array $payloads) {
 		$url = Configure::read('SQS.queues.' . $taskName);
@@ -98,18 +98,29 @@ class SimpleQueue {
 		}
 
 		try {
-			return $this->client()->sendMessageBatch(array(
+			CakeLog::debug(sprintf('Creating %d background jobs: %s', count($payloads), $taskName), array('sqs'));
+			$result = $this->client()->sendMessageBatch(array(
 				'QueueUrl' => $url,
 				'Entries' => array_map(function($e) use (&$i) {
-					return array('Id' => $id++, 'MessageBody' => json_encode($e));
+					return array('Id' => 'a' . ($i++), 'MessageBody' => json_encode($e));
 				}, $payloads)
 			));
+
+			$failed = [];
+			foreach ((array)$result->get('Failed') as $f) {
+				$failed[(int)$f['Id']] = $f['Message'];
+			}
+
+			if (!empty($failed)) {
+				CakeLog::warning(sprintf('Failed sending %d messages for queue: %s', count($failed), $taskName), array('sqs'));
+			}
+
+			return $failed;
 		} catch (Exception $e) {
 			CakeLog::error($e->getMessage(), 'sqs');
-			return false;
 		}
 
-		return true;
+		return false;
 	}
 
 }
