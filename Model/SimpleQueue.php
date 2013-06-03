@@ -6,7 +6,7 @@ App::uses('CakeLog', 'Log');
 App::uses('Configure', 'Core');
 
 /**
- * An utility wrapper for AWS Simple Queue System. This will handle the conenction
+ * An utility wrapper for AWS Simple Queue System. This will handle the connection
  * creation and offers some wrappers around the message creation methods to marshal
  * any provided data.
  **/
@@ -52,11 +52,7 @@ class SimpleQueue {
  * @return boolean success
  **/
 	public function send($taskName, $data = null) {
-		$url = Configure::read('SQS.queues.' . $taskName);
-		if (empty($url)) {
-			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write(SQS.queue.$taskName, \$url)");
-		}
-
+		$url = $this->_taskURL($taskName);
 		$data = json_encode($data);
 		CakeLog::debug(sprintf('Creating background job: %s', $taskName), array('sqs'));
 
@@ -64,7 +60,7 @@ class SimpleQueue {
 			$result = $this->client()->sendMessage(array(
 				'QueueUrl' => $url,
 				'MessageBody' => $data
-			))->get('MessageId');
+			))->get('MessageId'); 
 		} catch (Exception $e) {
 			CakeLog::error($e->getMessage(), 'sqs');
 			$result = false;
@@ -92,10 +88,7 @@ class SimpleQueue {
  * @return array list of messages that failed to be sent or false if an exception was caught
  **/
 	public function sendBatch($taskName, array $payloads) {
-		$url = Configure::read('SQS.queues.' . $taskName);
-		if (empty($url)) {
-			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write(SQS.queue.$taskName, \$url)");
-		}
+		$url = $this->_taskURL($taskName);
 
 		try {
 			CakeLog::debug(sprintf('Creating %d background jobs: %s', count($payloads), $taskName), array('sqs'));
@@ -123,4 +116,61 @@ class SimpleQueue {
 		return false;
 	}
 
+/**
+ * Gets a pending message for an specific queue.
+ *
+ * @param string $taskName the name of the queue for which you want to get one message
+ * @return Guzzle\Service\Resource\Model
+ * @see http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.Sqs.SqsClient.html#_receiveMessage
+ */
+	public function receiveMessage($taskName) {
+		$url = $this->_taskURL($taskName);
+
+		try {
+			return $this->client()->receiveMessage(array(
+				'QueueUrl' => $url
+			));
+		} catch (Exception $e) {
+			CakeLog::error($e->getMessage(), 'sqs');
+			return false;
+		}
+	}
+
+/**
+ * Deletes a message from the specified task queue. This is used to acknowledge that
+ * the message was received and that it should not be enqueued again.
+ *
+ * @param string $taskName the name of the queue for which you want to delete one message
+ * @param string $id the ResourceHandle string originally received with the message
+ * @return Guzzle\Service\Resource\Model or false if an exception is caught
+ * @see http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.Sqs.SqsClient.html#_deleteMessage
+ */
+	public function deleteMessage($taskName, $id) {
+		$url = $this->_taskURL($taskName);
+
+		try {
+			return $this->client()->deleteMessage(array(
+				'QueueUrl' => $url,
+				'ReceiptHandle' => $id
+			));
+		} catch (Exception $e) {
+			CakeLog::error($e->getMessage(), 'sqs');
+			return false;
+		}
+
+	}
+
+/**
+ * Returns the url for an specific task name as configured
+ *
+ * @param string $taskName
+ * @return string
+ */
+	protected function _taskURL($taskName) {
+		$url = Configure::read('SQS.queues.' . $taskName);
+		if (empty($url)) {
+			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write(SQS.queue.$taskName, \$url)");
+		}
+		return $url;
+	}
 }
