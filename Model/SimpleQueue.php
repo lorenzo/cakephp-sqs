@@ -101,7 +101,7 @@ class SimpleQueue {
 
 			$failed = array();
 			foreach ((array)$result->get('Failed') as $f) {
-				$failed[(int)$f['Id']] = $f['Message'];
+				$failed[(int)substr($f['Id'], 1)] = $f['Message'];
 			}
 
 			if (!empty($failed)) {

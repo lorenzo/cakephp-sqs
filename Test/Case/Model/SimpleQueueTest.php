@@ -258,4 +258,86 @@ class SimpleQueueTest extends CakeTestCase {
 		$this->assertEquals(array(), $queue->sendBatch('foo', $data));
 	}
 
+/**
+ * Tests sendBatch with failures
+ *
+ * @return void
+ */
+	public function testSendBatchFailures() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('sendMessageBatch'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+
+		$model = $this->getMock('\Guzzle\Service\Resource\Model');
+		$model->expects($this->once())->method('get')
+			->with('Failed')
+			->will($this->returnValue([['Id' => 'a1', 'Message' => 'you fail']]));
+
+		$client->expects($this->once())->method('sendMessageBatch')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+				'Entries' => array(
+					array('Id' => 'a', 'MessageBody' => json_encode(array(1))),
+					array('Id' => 'a1', 'MessageBody' => json_encode(array(2))),
+				)
+			))
+			->will($this->returnValue($model));
+
+		$data = array(
+			array(1),
+			array(2)
+		);
+		$this->assertEquals(array('1' => 'you fail'), $queue->sendBatch('foo', $data));
+	}
+
+/**
+ * Tests sendBatch with exception
+ *
+ * @return void
+ */
+	public function testSendBatchException() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('sendMessageBatch'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+
+		$model = $this->getMock('\Guzzle\Service\Resource\Model');
+		$model->expects($this->never())->method('get');
+
+		$client->expects($this->once())->method('sendMessageBatch')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+				'Entries' => array(
+					array('Id' => 'a', 'MessageBody' => json_encode(array(1))),
+					array('Id' => 'a1', 'MessageBody' => json_encode(array(2))),
+				)
+			))
+			->will($this->throwException(new Exception('You fail')));
+
+		$data = array(
+			array(1),
+			array(2)
+		);
+		$this->assertFalse($queue->sendBatch('foo', $data));
+	}
+
 }
