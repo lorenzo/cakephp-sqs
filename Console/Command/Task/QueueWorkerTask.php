@@ -40,7 +40,6 @@ class QueueWorkerTask extends AppShell {
 	public function work($name = 'default') {
 		$this->log(sprintf("Starting %s worker", $name), 'info', 'sqs');
 		$worker = $this->getWorker();
-		$this->_setupEvents();
 
 		while (true) {
 			foreach ($this->_callbacks as $queue => $callback) {
@@ -113,14 +112,6 @@ class QueueWorkerTask extends AppShell {
 		$event = new CakeEvent($name, $this, $data);
 		$this->getEventManager()->dispatch($event);
 		return !$event->isStopped();
-	}
-
-/**
- * Setup some internal event listeners
- *
- * @return void
- */
-	protected function _setupEvents() {
 	}
 
 /**
