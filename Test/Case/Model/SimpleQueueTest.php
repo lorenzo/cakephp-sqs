@@ -340,4 +340,118 @@ class SimpleQueueTest extends CakeTestCase {
 		$this->assertFalse($queue->sendBatch('foo', $data));
 	}
 
+/**
+ * Tests receiveMessage method
+ *
+ * @return void
+ */
+	public function testReceiveMessage() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('receiveMessage'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+		
+		$client->expects($this->once())->method('receiveMessage')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+			))
+			->will($this->returnValue('yay!'));
+		$this->assertEquals('yay!', $queue->receiveMessage('foo'));
+	}
+
+/**
+ * Tests receiveMessage method exception
+ *
+ * @return void
+ */
+	public function testReceiveMessageException() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('receiveMessage'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+		
+		$client->expects($this->once())->method('receiveMessage')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+			))
+			->will($this->throwException(new Exception('You fail')));
+		$this->assertFalse($queue->receiveMessage('foo'));
+	}
+
+/**
+ * Tests deleteMessage method
+ *
+ * @return void
+ */
+	public function testDeleteMessage() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('deleteMessage'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+		
+		$client->expects($this->once())->method('deleteMessage')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+				'ReceiptHandle' => 'bar'
+			))
+			->will($this->returnValue('yay!'));
+		$this->assertEquals('yay!', $queue->deleteMessage('foo', 'bar'));
+	}
+
+/**
+ * Tests deleteMessage method with exception
+ *
+ * @return void
+ */
+	public function testDeleteMessageException() {
+		Configure::write('SQS', array(
+			'connection' => array(
+				'key' => 'a',
+				'secret' => 'b',
+				'region' => 'us-east-1'
+			),
+			'queues' => array(
+				'foo' => 'http://fake.local'
+			)
+		));
+		$client = $this->getMock('\Aws\Sqs\SqsClient', array('deleteMessage'), array(), '', false);
+		$queue = new SimpleQueue;
+		$queue->client($client);
+		
+		$client->expects($this->once())->method('deleteMessage')
+			->with(array(
+				'QueueUrl' => 'http://fake.local',
+				'ReceiptHandle' => 'bar'
+			))
+			->will($this->throwException(new Exception('You fail')));
+		$this->assertFalse($queue->deleteMessage('foo', 'bar'));
+	}
+
 }
