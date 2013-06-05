@@ -81,7 +81,7 @@ class QueueWorkerTask extends AppShell {
  */
 	public function addFunction($name, $object, $method = null) {
 		if ($method) {
-			$this->_callbacks[$name] = [$object, $method];
+			$this->_callbacks[$name] = array($object, $method);
 		} else {
 			$this->_callbacks[$name] = $object;
 		}
