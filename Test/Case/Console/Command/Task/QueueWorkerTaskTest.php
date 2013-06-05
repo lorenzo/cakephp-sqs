@@ -73,7 +73,7 @@ class QueueWorkerTaskTest extends CakeTestCase {
 		$manager->expects($this->at(1))->method('dispatch')->with(new CakeEvent('Queue.afterWork', $task));
 
 		// Faking the first message that will be received from the job1 queue
-		$message = [['ReceiptHandle' => 'myId', 'Body' => json_encode('foo')]];
+		$message = array(array('ReceiptHandle' => 'myId', 'Body' => json_encode('foo')));
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
 		$model->expects($this->exactly(2))->method('get')->with('Messages')
 			->will($this->returnValue($message));
@@ -89,7 +89,7 @@ class QueueWorkerTaskTest extends CakeTestCase {
 		$manager->expects($this->at(3))->method('dispatch')->with(new CakeEvent('Queue.afterWork', $task));
 
 		// Faking the first message that will be received from the job2 queue
-		$message = [['ReceiptHandle' => 'mySecondID', 'Body' => json_encode('foo2')]];
+		$message = array(array('ReceiptHandle' => 'mySecondID', 'Body' => json_encode('foo2')));
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
 		$model->expects($this->exactly(2))->method('get')->with('Messages')
 			->will($this->returnValue($message));
@@ -104,7 +104,7 @@ class QueueWorkerTaskTest extends CakeTestCase {
 
 		// Faking the first message that will be received from the job1 queue
 		// This time and exception will be thrown to break the infinite loop
-		$message = [['ReceiptHandle' => 'myThirdId', 'Body' => json_encode('foo3')]];
+		$message = array(array('ReceiptHandle' => 'myThirdId', 'Body' => json_encode('foo3')));
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
 		$model->expects($this->exactly(2))->method('get')->with('Messages')
 			->will($this->returnValue($message));
