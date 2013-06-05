@@ -1,5 +1,7 @@
 # AWS Simple Queue Service for CakePHP #
 
+[![Build Status](https://travis-ci.org/lorenzo/cakephp-sqs.png?branch=master)](https://travis-ci.org/lorenzo/cakephp-sqs)
+
 This plugin is an adaptor for the original AWS SDK classes related to the Simple Queue Service (SQS). What in offers is an utility
 class that will handle construction and configuration of the HTTP client based on the information stored in the Configure class.
 
