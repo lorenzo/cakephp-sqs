@@ -18,11 +18,11 @@ class SimpleQueueTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$class = $this->getMockClass('BaseLog', ['write']);
+		$class = $this->getMockClass('BaseLog', array('write'));
 		CakeLog::config('queuetest', array(
 			'engine' => $class,
 			'types' => array('error', 'debug'),
-			'scopes' => ['sqs']
+			'scopes' => array('sqs')
 		));
 		$this->logger = CakeLog::stream('queuetest');
 		CakeLog::disable('stderr');
@@ -281,7 +281,7 @@ class SimpleQueueTest extends CakeTestCase {
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
 		$model->expects($this->once())->method('get')
 			->with('Failed')
-			->will($this->returnValue([['Id' => 'a1', 'Message' => 'you fail']]));
+			->will($this->returnValue(array(array('Id' => 'a1', 'Message' => 'you fail'))));
 
 		$client->expects($this->once())->method('sendMessageBatch')
 			->with(array(
@@ -359,7 +359,7 @@ class SimpleQueueTest extends CakeTestCase {
 		$client = $this->getMock('\Aws\Sqs\SqsClient', array('receiveMessage'), array(), '', false);
 		$queue = new SimpleQueue;
 		$queue->client($client);
-		
+
 		$client->expects($this->once())->method('receiveMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
@@ -387,7 +387,7 @@ class SimpleQueueTest extends CakeTestCase {
 		$client = $this->getMock('\Aws\Sqs\SqsClient', array('receiveMessage'), array(), '', false);
 		$queue = new SimpleQueue;
 		$queue->client($client);
-		
+
 		$client->expects($this->once())->method('receiveMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
@@ -415,7 +415,7 @@ class SimpleQueueTest extends CakeTestCase {
 		$client = $this->getMock('\Aws\Sqs\SqsClient', array('deleteMessage'), array(), '', false);
 		$queue = new SimpleQueue;
 		$queue->client($client);
-		
+
 		$client->expects($this->once())->method('deleteMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
@@ -444,7 +444,7 @@ class SimpleQueueTest extends CakeTestCase {
 		$client = $this->getMock('\Aws\Sqs\SqsClient', array('deleteMessage'), array(), '', false);
 		$queue = new SimpleQueue;
 		$queue->client($client);
-		
+
 		$client->expects($this->once())->method('deleteMessage')
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
