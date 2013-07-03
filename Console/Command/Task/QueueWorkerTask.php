@@ -44,7 +44,7 @@ class QueueWorkerTask extends AppShell {
 		while (true) {
 			foreach ($this->_callbacks as $queue => $callback) {
 				if (!$this->_triggerEvent('Queue.beforeWork')) {
-					break;
+					break 2;
 				}
 
 				$job = $worker->receiveMessage($queue);
@@ -53,7 +53,7 @@ class QueueWorkerTask extends AppShell {
 				}
 
 				if (!$this->_triggerEvent('Queue.afterWork')) {
-					break;
+					break 2;
 				}
 			}
 		}
