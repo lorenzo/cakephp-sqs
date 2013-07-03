@@ -80,6 +80,8 @@ class QueueWorkerTask extends AppShell {
  * @return void
  */
 	public function addFunction($name, $object, $method = null) {
+		$this->log(sprintf('Adding function "%s" for queue "%s"', $name, $this->getWorker()->queueUrl($name)), 'info', 'sqs');
+
 		if ($method) {
 			$this->_callbacks[$name] = array($object, $method);
 		} else {

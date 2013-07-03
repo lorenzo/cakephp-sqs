@@ -52,7 +52,7 @@ class SimpleQueue {
  * @return boolean success
  **/
 	public function send($taskName, $data = null) {
-		$url = $this->_taskURL($taskName);
+		$url = $this->queueUrl($taskName);
 		$data = json_encode($data);
 		CakeLog::debug(sprintf('Creating background job: %s', $taskName), array('sqs'));
 
@@ -88,7 +88,7 @@ class SimpleQueue {
  * @return array list of messages that failed to be sent or false if an exception was caught
  **/
 	public function sendBatch($taskName, array $payloads) {
-		$url = $this->_taskURL($taskName);
+		$url = $this->queueUrl($taskName);
 
 		try {
 			CakeLog::debug(sprintf('Creating %d messages in queue: %s', count($payloads), $taskName), array('sqs'));
@@ -124,7 +124,7 @@ class SimpleQueue {
  * @see http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.Sqs.SqsClient.html#_receiveMessage
  */
 	public function receiveMessage($taskName) {
-		$url = $this->_taskURL($taskName);
+		$url = $this->queueUrl($taskName);
 
 		try {
 			return $this->client()->receiveMessage(array(
@@ -145,7 +145,7 @@ class SimpleQueue {
  * @see http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.Sqs.SqsClient.html#_deleteMessage
  */
 	public function deleteMessage($taskName, $id) {
-		$url = $this->_taskURL($taskName);
+		$url = $this->queueUrl($taskName);
 
 		try {
 			return $this->client()->deleteMessage(array(
@@ -164,7 +164,7 @@ class SimpleQueue {
  * @param string $taskName
  * @return string
  */
-	protected function _taskURL($taskName) {
+	public function queueUrl($taskName) {
 		$url = Configure::read('SQS.queues.' . $taskName);
 		if (empty($url)) {
 			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write(SQS.queue.$taskName, \$url)");
