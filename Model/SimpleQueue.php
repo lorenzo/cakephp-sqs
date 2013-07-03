@@ -60,9 +60,9 @@ class SimpleQueue {
 			$result = $this->client()->sendMessage(array(
 				'QueueUrl' => $url,
 				'MessageBody' => $data
-			))->get('MessageId'); 
+			))->get('MessageId');
 		} catch (Exception $e) {
-			CakeLog::error($e->getMessage(), 'sqs');
+			$this->_handleException($e);
 			$result = false;
 		}
 
@@ -110,7 +110,7 @@ class SimpleQueue {
 
 			return $failed;
 		} catch (Exception $e) {
-			CakeLog::error($e->getMessage(), 'sqs');
+			$this->_handleException($e);
 		}
 
 		return false;
@@ -131,8 +131,7 @@ class SimpleQueue {
 				'QueueUrl' => $url
 			));
 		} catch (Exception $e) {
-			CakeLog::error($e->getMessage(), 'sqs');
-			return false;
+			return $this->_handleException($e);
 		}
 	}
 
@@ -154,8 +153,7 @@ class SimpleQueue {
 				'ReceiptHandle' => $id
 			));
 		} catch (Exception $e) {
-			CakeLog::error($e->getMessage(), 'sqs');
-			return false;
+			return $this->_handleException($e);
 		}
 
 	}
@@ -172,5 +170,21 @@ class SimpleQueue {
 			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write(SQS.queue.$taskName, \$url)");
 		}
 		return $url;
+	}
+
+/**
+ * Handle SQS exceptions
+ *
+ * @throws Exception in case the queue doesn't exist
+ * @param Exception $e
+ * @return false
+ */
+	protected function _handleException(Exception $e) {
+		if ($e->getExceptionCode() === 'AWS.SimpleQueueService.NonExistentQueue') {
+			throw $e;
+		}
+
+		CakeLog::error($e->getMessage(), 'sqs');
+		return false;
 	}
 }
