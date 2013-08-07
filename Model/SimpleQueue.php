@@ -20,6 +20,14 @@ class SimpleQueue {
 	protected $_client = null;
 
 /**
+ * The number of exceptions that have been caught
+ * that weren't fatal
+ *
+ * @var integer
+ */
+	protected $_exceptionCount = 0;
+
+/**
  * Gets the configured client connection to SQS. If none is set, it will create
  * a new one out of the configuration stored using the Configure class. It is also
  * possible to provide you own client instance already configured and initialized.
@@ -127,9 +135,7 @@ class SimpleQueue {
 		$url = $this->queueUrl($taskName);
 
 		try {
-			return $this->client()->receiveMessage(array(
-				'QueueUrl' => $url
-			));
+			return $this->client()->receiveMessage(array('QueueUrl' => $url));
 		} catch (Exception $e) {
 			return $this->_handleException($e);
 		}
@@ -167,7 +173,7 @@ class SimpleQueue {
 	public function queueUrl($taskName) {
 		$url = Configure::read('SQS.queues.' . $taskName);
 		if (empty($url)) {
-			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write(SQS.queue.$taskName, \$url)");
+			throw new InvalidArgumentException("$taskName URL was not configured. Use Configure::write('SQS.queues.$taskName', '\$url');");
 		}
 		return $url;
 	}
@@ -176,14 +182,34 @@ class SimpleQueue {
  * Handle SQS exceptions
  *
  * @throws Exception in case the queue doesn't exist
+ * @see http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Query_QueryErrors.html
  * @param Exception $e
  * @return false
  */
 	protected function _handleException(Exception $e) {
-		if ($e->getExceptionCode() === 'AWS.SimpleQueueService.NonExistentQueue') {
+		$fatalErrors = array(
+			'AccessDenied',
+			'AuthFailure',
+			'InvalidAccessKeyId',
+			'InvalidAction',
+			'InvalidAddress',
+			'InvalidHttpRequest',
+			'InvalidRequest',
+			'InvalidSecurity',
+			'InvalidSecurityToken',
+			'InvalidClientTokenId',
+			'MissingClientTokenId',
+			'MissingCredentials',
+			'MissingParameter',
+			'X509ParseError',
+			'AWS.SimpleQueueService.NonExistentQueue'
+		);
+
+		if (in_array($e->getExceptionCode(), $fatalErrors) || $this->_exceptionCount >= 25) {
 			throw $e;
 		}
 
+		$this->_exceptionCount++;
 		CakeLog::error($e->getMessage(), 'sqs');
 		return false;
 	}

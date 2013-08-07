@@ -58,57 +58,97 @@ class QueueWorkerTaskTest extends CakeTestCase {
  * @return void
  */
 	public function testWork() {
+		Configure::write('SQS.queues.job1', 'http://ok.dk/');
+		Configure::write('SQS.queues.job2', 'http://ok.dk/');
+
 		$task = $this->getMock('QueueWorkerTask', array('getEventManager', 'log', 'getWorker'));
 
 		// Making a mocked SimpleQueue and making getWorker always return it
 		$queue = $this->getMock('SimpleQueue', array('receiveMessage', 'deleteMessage'));
-		$task->expects($this->any())->method('getWorker')->will($this->returnValue($queue));
+		$task
+			->expects($this->any())
+			->method('getWorker')
+			->will($this->returnValue($queue));
 
 		//Making a mocked CakeEventManager and making getEventManager always return it
 		$manager = $this->getMock('CakeEventManager');
-		$task->expects($this->any())->method('getEventManager')
+		$task
+			->expects($this->any())
+			->method('getEventManager')
 			->will($this->returnValue($manager));
 
-		$manager->expects($this->at(0))->method('dispatch')->with(new CakeEvent('Queue.beforeWork', $task));
-		$manager->expects($this->at(1))->method('dispatch')->with(new CakeEvent('Queue.afterWork', $task));
+		$manager
+			->expects($this->at(0))
+			->method('dispatch')
+			->with(new CakeEvent('Queue.beforeWork', $task));
+		$manager
+			->expects($this->at(1))
+			->method('dispatch')
+			->with(new CakeEvent('Queue.afterWork', $task));
 
 		// Faking the first message that will be received from the job1 queue
 		$message = array(array('ReceiptHandle' => 'myId', 'Body' => json_encode('foo')));
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
-		$model->expects($this->exactly(2))->method('get')->with('Messages')
+		$model
+			->expects($this->exactly(2))
+			->method('get')
+			->with('Messages')
 			->will($this->returnValue($message));
-		$queue->expects($this->at(0))->method('receiveMessage')->with('job1')
+		$queue
+			->expects($this->at(0))
+			->method('receiveMessage')
+			->with('job1')
 			->will($this->returnValue($model));
 
 		// Telling the task to handle the queue job1 with a method in this test class
 		$task->addFunction('job1', $this, 'handleJob');
 
-
 		// the second queue to manage will be job2
-		$manager->expects($this->at(2))->method('dispatch')->with(new CakeEvent('Queue.beforeWork', $task));
-		$manager->expects($this->at(3))->method('dispatch')->with(new CakeEvent('Queue.afterWork', $task));
+		$manager
+			->expects($this->at(2))
+			->method('dispatch')
+			->with(new CakeEvent('Queue.beforeWork', $task));
+		$manager
+			->expects($this->at(3))
+			->method('dispatch')
+			->with(new CakeEvent('Queue.afterWork', $task));
 
 		// Faking the first message that will be received from the job2 queue
 		$message = array(array('ReceiptHandle' => 'mySecondID', 'Body' => json_encode('foo2')));
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
-		$model->expects($this->exactly(2))->method('get')->with('Messages')
+		$model
+			->expects($this->exactly(2))
+			->method('get')
+			->with('Messages')
 			->will($this->returnValue($message));
-		$queue->expects($this->at(2))->method('receiveMessage')->with('job2')
+		$queue
+			->expects($this->at(2))
+			->method('receiveMessage')
+			->with('job2')
 			->will($this->returnValue($model));
 
 		// Telling the task to handle the queue job2 with a method in this test class
 		$task->addFunction('job2', $this, 'handleJob2');
 
 		// In the next cycle of the infinte loop it is the turn to manage job1 again
-		$manager->expects($this->at(4))->method('dispatch')->with(new CakeEvent('Queue.beforeWork', $task));
+		$manager
+			->expects($this->at(4))
+			->method('dispatch')
+			->with(new CakeEvent('Queue.beforeWork', $task));
 
 		// Faking the first message that will be received from the job1 queue
 		// This time and exception will be thrown to break the infinite loop
 		$message = array(array('ReceiptHandle' => 'myThirdId', 'Body' => json_encode('foo3')));
 		$model = $this->getMock('\Guzzle\Service\Resource\Model');
-		$model->expects($this->exactly(2))->method('get')->with('Messages')
+		$model
+			->expects($this->exactly(2))
+			->method('get')
+			->with('Messages')
 			->will($this->returnValue($message));
-		$queue->expects($this->at(3))->method('receiveMessage')->with('job1')
+		$queue
+			->expects($this->at(3))
+			->method('receiveMessage')
+			->with('job1')
 			->will($this->returnValue($model));
 
 		// Only the first handleJob function returns true, so only message will be deleted
