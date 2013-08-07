@@ -22,7 +22,7 @@ before_script:
   - git checkout $CAKE_VERSION
   - mv ../cakephp-sqs app/Plugin/SQS
   - chmod -R 0777 app/tmp
-  - wget https://gist.github.com/Jippi/5716937/raw/composer.json
+  - wget https://gist.github.com/jippi/5716937/raw/composer.json
   - composer install
   - echo "require_once dirname('${TRAVIS_BUILD_DIR}') . '/cakephp/vendor/autoload.php';" >> app/Config/bootstrap.php
 
