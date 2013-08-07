@@ -514,7 +514,7 @@ class SimpleQueueTest extends CakeTestCase {
 
 		$ReflectionMethod = new ReflectionMethod('SimpleQueue', '_handleException');
 		$ReflectionMethod->setAccessible(true);
-		$ReflectionMethod->invokeArgs($queue, [$exception]);
+		$ReflectionMethod->invokeArgs($queue, array($exception));
 	}
 
 /**
@@ -539,7 +539,7 @@ class SimpleQueueTest extends CakeTestCase {
 		$ReflectionMethod->setAccessible(true);
 
 		for ($i = 0; $i < 30; $i++) {
-			$ReflectionMethod->invokeArgs($queue, [$exception]);
+			$ReflectionMethod->invokeArgs($queue, array($exception));
 		}
 	}
 
