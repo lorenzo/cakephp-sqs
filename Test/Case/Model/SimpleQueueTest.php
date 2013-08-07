@@ -4,6 +4,20 @@ use Aws\Sqs\SqsClient;
 
 App::uses('SimpleQueue', 'SQS.Model');
 
+class SQSTestException extends Exception {
+
+	protected $_exceptionCode;
+
+	public function setExceptionCode($code) {
+		$this->_exceptionCode = $code;
+	}
+
+	public function getExceptionCode() {
+		return $this->_exceptionCode;
+	}
+
+}
+
 /**
  * Tests SimpleQueue class
  *
@@ -18,7 +32,7 @@ class SimpleQueueTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$class = $this->getMockClass('BaseLog', array('write'));
+		$class = $this->getMockClass('BaseLog', array('write'), array(), 'SQSBaseLog');
 		CakeLog::config('queuetest', array(
 			'engine' => $class,
 			'types' => array('error', 'debug'),
@@ -185,7 +199,7 @@ class SimpleQueueTest extends CakeTestCase {
 				'QueueUrl' => 'http://fake.local',
 				'MessageBody' => json_encode(array('my' => 'data'))
 			))
-			->will($this->throwException(new Exception('you fail')));
+			->will($this->throwException(new SQSTestException('you fail')));
 
 		$this->assertFalse($queue->send('foo', array('my' => 'data')));
 	}
@@ -194,7 +208,7 @@ class SimpleQueueTest extends CakeTestCase {
  * Tests send method with missing config for queue
  *
  * @expectedException InvalidArgumentException
- * @expectedExceptionMessage foo URL was not configured. Use Configure::write(SQS.queue.foo, $url)
+ * @expectedExceptionMessage foo URL was not configured. Use Configure::write('SQS.queues.foo', '$url')
  * @return void
  */
 	public function testSendMissingConfig() {
@@ -331,7 +345,7 @@ class SimpleQueueTest extends CakeTestCase {
 					array('Id' => 'a1', 'MessageBody' => json_encode(array(2))),
 				)
 			))
-			->will($this->throwException(new Exception('You fail')));
+			->will($this->throwException(new SQSTestException('You fail')));
 
 		$data = array(
 			array(1),
@@ -392,7 +406,7 @@ class SimpleQueueTest extends CakeTestCase {
 			->with(array(
 				'QueueUrl' => 'http://fake.local',
 			))
-			->will($this->throwException(new Exception('You fail')));
+			->will($this->throwException(new SQSTestException('You fail')));
 		$this->assertFalse($queue->receiveMessage('foo'));
 	}
 
@@ -450,8 +464,83 @@ class SimpleQueueTest extends CakeTestCase {
 				'QueueUrl' => 'http://fake.local',
 				'ReceiptHandle' => 'bar'
 			))
-			->will($this->throwException(new Exception('You fail')));
+			->will($this->throwException(new SQSTestException('You fail')));
 		$this->assertFalse($queue->deleteMessage('foo', 'bar'));
+	}
+
+/**
+ * Date provider for test_handleException
+ *
+ * @return array
+ */
+	public function _handleExceptionDataProvider() {
+		return array(
+			array('AccessDenied'),
+			array('AuthFailure'),
+			array('InvalidAccessKeyId'),
+			array('InvalidAction'),
+			array('InvalidAddress'),
+			array('InvalidHttpRequest'),
+			array('InvalidRequest'),
+			array('InvalidSecurity'),
+			array('InvalidSecurityToken'),
+			array('InvalidClientTokenId'),
+			array('MissingClientTokenId'),
+			array('MissingCredentials'),
+			array('MissingParameter'),
+			array('X509ParseError'),
+			array('AWS.SimpleQueueService.NonExistentQueue'),
+			array('ServiceUnavailable', false),
+			array('InternalError', false)
+		);
+	}
+
+/**
+ * Test that some exception codes is fatal and other
+ * isn't
+ *
+ * @dataProvider _handleExceptionDataProvider
+ * @return void
+ */
+	public function test_handleException($code, $throwException = true) {
+		$exception = new SQSTestException('Sample');
+		$exception->setExceptionCode($code);
+
+		if ($throwException) {
+			$this->setExpectedException('SQSTestException');
+		}
+
+		$queue = new SimpleQueue;
+
+		$ReflectionMethod = new ReflectionMethod('SimpleQueue', '_handleException');
+		$ReflectionMethod->setAccessible(true);
+		$ReflectionMethod->invokeArgs($queue, [$exception]);
+	}
+
+/**
+ * Test that 25 non-fatal exceptions will still re-throw whatever
+ * exception that there may come by
+ *
+ * @expectedException SQSTestException
+ * @expectedExceptionMessage Sample
+ * @return void
+ */
+	public function test_handleExceptionNonFatalMaxCount() {
+		$exception = $this->getMock('SQSTestException', array(), array('Sample'));
+		$exception
+			->expects($this->exactly(26))
+			->method('getExceptionCode')
+			->with()
+			->will($this->returnValue('ImNotFatal'));
+
+		$queue = new SimpleQueue();
+
+		$ReflectionMethod = new ReflectionMethod('SimpleQueue', '_handleException');
+		$ReflectionMethod->setAccessible(true);
+
+		for ($i = 0; $i < 30; $i++) {
+			$ReflectionMethod->invokeArgs($queue, [$exception]);
+		}
 	}
 
 }
