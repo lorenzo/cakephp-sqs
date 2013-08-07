@@ -21,7 +21,7 @@ class SimpleQueue {
 
 /**
  * The number of exceptions that have been caught
- * that wasn't fatal
+ * that weren't fatal
  *
  * @var integer
  */
