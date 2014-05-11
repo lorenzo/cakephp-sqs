@@ -205,8 +205,14 @@ class SimpleQueue {
 			'AWS.SimpleQueueService.NonExistentQueue'
 		);
 
-		if (in_array($e->getExceptionCode(), $fatalErrors) || $this->_exceptionCount >= 25) {
+		if ($this->_exceptionCount >= 25) {
 			throw $e;
+		}
+
+		if ($e instanceof Aws\Common\Exception\ServiceResponseException) {
+			if (in_array($e->getExceptionCode(), $fatalErrors)) {
+				throw $e;
+			}
 		}
 
 		$this->_exceptionCount++;
