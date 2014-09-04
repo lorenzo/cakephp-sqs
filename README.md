@@ -46,7 +46,7 @@ The plugin expects the following configuration data in the Configure keys:
 		),
 		'queues' => array(
 			'my_first_queue' => 'https://sqs.eu-west-1.amazonaws.com/123456/my_first_queue',
-			'my_second_queue' => 'https://sqs.eu-west-1.amazonaws.com/123456/my_first_queue',
+			'my_second_queue' => 'https://sqs.eu-west-1.amazonaws.com/123456/my_second_queue',
 		)
 	));
 
