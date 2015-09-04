@@ -165,6 +165,26 @@ class SimpleQueue {
 	}
 
 /**
+ * Gets queue attributes
+ *
+ * @param string $taskName the name of the queue for which you want to get one message
+ * @param array $attributes list with attributes that you want to receive
+ * @return Guzzle\Service\Resource\Model
+ */
+	public function getAttributes($taskName, $attributes) {
+		$url = $this->queueUrl($taskName);
+
+		try {
+			return $this->client()->getQueueAttributes([
+				'QueueUrl' => $url,
+				'AttributeNames' => $attributes,
+			]);
+		} catch (Exception $e) {
+			return $this->_handleException($e);
+		}
+	}
+
+/**
  * Returns the url for an specific task name as configured
  *
  * @param string $taskName
