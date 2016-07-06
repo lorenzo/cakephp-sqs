@@ -175,10 +175,10 @@ class SimpleQueue {
 		$url = $this->queueUrl($taskName);
 
 		try {
-			return $this->client()->getQueueAttributes([
+			return $this->client()->getQueueAttributes(array(
 				'QueueUrl' => $url,
 				'AttributeNames' => $attributes,
-			]);
+			));
 		} catch (Exception $e) {
 			return $this->_handleException($e);
 		}
