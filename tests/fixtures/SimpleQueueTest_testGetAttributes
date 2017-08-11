@@ -1,0 +1,30 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sqs.eu-central-1.amazonaws.com/925075006686/testQueue1'
+        headers:
+            Host: sqs.eu-central-1.amazonaws.com
+            Expect: null
+            Accept-Encoding: null
+            Content-Type: application/x-www-form-urlencoded
+            aws-sdk-invocation-id: f06c85213e9d79918efbec951e42a32e
+            aws-sdk-retry: 0/0
+            X-Amz-Date: 20170811T184023Z
+            Authorization: 'AWS4-HMAC-SHA256 Credential=SOMEKEY/20170811/eu-central-1/sqs/aws4_request, SignedHeaders=aws-sdk-invocation-id;aws-sdk-retry;host;x-amz-date, Signature=a1bea66f096510cb93274cf0112c754a576e322a858f2e6bb23b923d9762e752'
+            User-Agent: 'aws-sdk-php/3.32.6 GuzzleHttp/6.2.1 curl/7.47.0 PHP/7.1.6-1~ubuntu16.04.1+deb.sury.org+1'
+            Accept: null
+        body: 'Action=GetQueueAttributes&Version=2012-11-05&QueueUrl=https%3A%2F%2Fsqs.eu-central-1.amazonaws.com%2F925075006686%2FtestQueue1&AttributeName.1=ApproximateNumberOfMessages'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Server
+            Date: 'Fri, 11 Aug 2017 18:40:24 GMT'
+            Content-Type: text/xml
+            Content-Length: '358'
+            Connection: keep-alive
+            x-amzn-RequestId: b3f8fe2b-e360-57f1-9da9-ac2c1f38b8c7
+        body: '<?xml version="1.0"?><GetQueueAttributesResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><GetQueueAttributesResult><Attribute><Name>ApproximateNumberOfMessages</Name><Value>17</Value></Attribute></GetQueueAttributesResult><ResponseMetadata><RequestId>b3f8fe2b-e360-57f1-9da9-ac2c1f38b8c7</RequestId></ResponseMetadata></GetQueueAttributesResponse>'
