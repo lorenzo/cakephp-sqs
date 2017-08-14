@@ -110,54 +110,54 @@ The return value is unaltered from the AWS SDK. Please refer to its documentatio
 As mentioned before, this plugin helps you create long lived worker shells that will process jobs one at a time as
 messages are received from a set of queues in CakeSQS. This is an example
 
-<?php
-
-namespace App\Shell;
-
-use Cake\Console\Shell;
-use Cake\Core\Configure;
-use CakeSQS\SimpleQueue;
-
-/**
- * Sqs shell command.
- */
-class SqsShell extends Shell
-{
-
-    public $tasks = ['CakeSQS.QueueWorker'];
-
-    public function send()
+    <?php
+    
+    namespace App\Shell;
+    
+    use Cake\Console\Shell;
+    use Cake\Core\Configure;
+    use CakeSQS\SimpleQueue;
+    
+    /**
+     * Sqs shell command.
+     */
+    class SqsShell extends Shell
     {
-        $credentials = [
-            'key' => 'xxx',
-            'secret' => 'yyy',
-        ];
-
-        Configure::write('CakeSQS.connection.credentials', $credentials);
-        Configure::write('CakeSQS.queues.testQueue1', 'https://sqs.eu-central-1.amazonaws.com/zzzz/testQueue1');
-
-        $queue = new SimpleQueue();
-        debug($queue->send('testQueue1', 'some-data'));
+    
+        public $tasks = ['CakeSQS.QueueWorker'];
+    
+        public function send()
+        {
+            $credentials = [
+                'key' => 'xxx',
+                'secret' => 'yyy',
+            ];
+    
+            Configure::write('CakeSQS.connection.credentials', $credentials);
+            Configure::write('CakeSQS.queues.testQueue1', 'https://sqs.eu-central-1.amazonaws.com/zzzz/testQueue1');
+    
+            $queue = new SimpleQueue();
+            debug($queue->send('testQueue1', 'some-data'));
+        }
+    
+        public function workForever()
+        {
+            $credentials = [
+                'key' => 'xxx',
+                'secret' => 'yyy',
+            ];
+    
+            Configure::write('CakeSQS.connection.credentials', $credentials);
+            Configure::write('CakeSQS.queues.testQueue1', 'https://sqs.eu-central-1.amazonaws.com/zzz/testQueue1');
+    
+            $this->QueueWorker->addFunction('testQueue1', function ($item) {
+                debug($item);
+    
+                return true; // return true to delete the message upon processing, false to leave the message in the queue
+            });
+            $this->QueueWorker->work();
+        }
     }
-
-    public function workForever()
-    {
-        $credentials = [
-            'key' => 'xxx',
-            'secret' => 'yyy',
-        ];
-
-        Configure::write('CakeSQS.connection.credentials', $credentials);
-        Configure::write('CakeSQS.queues.testQueue1', 'https://sqs.eu-central-1.amazonaws.com/zzz/testQueue1');
-
-        $this->QueueWorker->addFunction('testQueue1', function ($item) {
-            debug($item);
-
-            return true; // return true to delete the message upon processing, false to leave the message in the queue
-        });
-        $this->QueueWorker->work();
-    }
-}
 
 The functions registered to handle jobs will receive the message body from the queue after decoding it using `json_decode`.
 
