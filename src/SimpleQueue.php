@@ -29,8 +29,7 @@ class SimpleQueue
             'region' => 'eu-central-1' // must match the region where the sqs queue was created
         ],
         'queues' => [
-            'my_first_queue' => 'https://sqs.eu-west-1.amazonaws.com/123456/my_first_queue',
-            'my_second_queue' => 'https://sqs.eu-west-1.amazonaws.com/123456/my_second_queue',
+            // sqs queue urls, for example: https://sqs.eu-central-1.amazonaws.com/12345/someQueue
         ]
     ];
 
