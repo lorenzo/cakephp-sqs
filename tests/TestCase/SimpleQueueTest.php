@@ -2,8 +2,8 @@
 namespace CakeSQS\Test;
 
 use Aws\Result;
-use Cake\TestSuite\TestCase;
 use CakeSQS\SimpleQueue;
+use Cake\TestSuite\TestCase;
 use VCR\VCR;
 
 class SimpleQueueTest extends TestCase

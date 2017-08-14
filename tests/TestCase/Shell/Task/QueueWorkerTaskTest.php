@@ -2,12 +2,12 @@
 
 namespace CakeSQS\Test\Shell\Task;
 
+use CakeSQS\Shell\Task\QueueWorkerTask;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Cake\TestSuite\TestCase;
-use CakeSQS\Shell\Task\QueueWorkerTask;
 
 /**
  * Tests SimpleQueuesTable class
