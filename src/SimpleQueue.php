@@ -17,7 +17,7 @@ class SimpleQueue
 
     protected $_defaultConfig = [
         'connection' => [
-            /**
+            /*
              * @see http://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.Sqs.SqsClient.html#___construct
              * for all possible config params
              */
@@ -33,6 +33,12 @@ class SimpleQueue
         ]
     ];
 
+    /**
+     * SimpleQueue constructor.
+     * Configuration will be loaded by default from CakeSQS key
+     *
+     * @param array $config Configuration override
+     */
     public function __construct($config = [])
     {
         $this->setConfig(Configure::read('CakeSQS'));
@@ -194,7 +200,7 @@ class SimpleQueue
     /**
      * Returns the url for an specific task name as configured
      *
-     * @param string $taskName
+     * @param string $taskName name of the queue
      * @return string
      */
     public function queueUrl($taskName)

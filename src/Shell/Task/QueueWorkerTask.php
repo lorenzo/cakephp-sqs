@@ -1,10 +1,10 @@
 <?php
 namespace CakeSQS\Shell\Task;
 
+use CakeSQS\SimpleQueue;
 use Cake\Console\Shell;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use CakeSQS\SimpleQueue;
 
 /**
  * QueueWorkerTask shell task.
@@ -88,9 +88,8 @@ class QueueWorkerTask extends Shell
     /**
      * Registers a callback as a worker function for a specific task name
      *
-     * @param string $name the name of the queue to susbscribe to
+     * @param string $name the name of the queue to subscribe to
      * @param callable $callback the object that contains the worker method
-     * @param string $method the name of the method that will be called with the job
      * @return void
      */
     public function addFunction($name, $callback)
@@ -125,7 +124,7 @@ class QueueWorkerTask extends Shell
      *
      * @param string $name The event name
      * @param mixed $data The event data
-     * @return boolean If the event was stopped or not
+     * @return bool If the event was stopped or not
      */
     protected function _triggerEvent($name, $data = null)
     {
@@ -139,6 +138,8 @@ class QueueWorkerTask extends Shell
      * The function that is used for all jobs, it will sub-dispatch to the real function
      * Useful for registering closures
      *
+     * @param string $name name of the queue
+     * @param \Aws\Result $job message
      * @return void
      */
     protected function _work($name, $job)
