@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        bootstrap="./tests/bootstrap.php"
+        colors="true"
+        stopOnFailure="false"
+>
+
+    <testsuites>
+        <testsuite name="CakePHPSqs Test Cases">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Setup a listener for fixtures -->
+    <listeners>
+        <listener
+                class="\Cake\TestSuite\Fixture\FixtureInjector"
+                file="./vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php">
+            <arguments>
+                <object class="\Cake\TestSuite\Fixture\FixtureManager" />
+            </arguments>
+        </listener>
+        <listener class="PHPUnit_Util_Log_VCR" file="vendor/php-vcr/phpunit-testlistener-vcr/PHPUnit/Util/Log/VCR.php" />
+    </listeners>
+
+    <!-- Prevent coverage reports from looking in tests and vendors -->
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src/</directory>
+            <directory suffix=".php">./plugins/*/src/</directory>
+        </whitelist>
+        <blacklist>
+            <directory suffix=".php">./vendor/</directory>
+            <directory suffix=".ctp">./vendor/</directory>
+
+            <directory suffix=".php">./tests/</directory>
+            <directory suffix=".ctp">./tests/</directory>
+        </blacklist>
+    </filter>
+</phpunit>

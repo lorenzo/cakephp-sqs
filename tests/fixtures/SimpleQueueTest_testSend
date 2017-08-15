@@ -1,0 +1,30 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sqs.eu-central-1.amazonaws.com/925075006686/testQueue1'
+        headers:
+            Host: sqs.eu-central-1.amazonaws.com
+            Expect: null
+            Accept-Encoding: null
+            Content-Type: application/x-www-form-urlencoded
+            aws-sdk-invocation-id: fae98718059fa8c95b175077625b5398
+            aws-sdk-retry: 0/0
+            X-Amz-Date: 20170811T175719Z
+            Authorization: 'AWS4-HMAC-SHA256 Credential=SOMEKEY/20170811/eu-central-1/sqs/aws4_request, SignedHeaders=aws-sdk-invocation-id;aws-sdk-retry;host;x-amz-date, Signature=8b4346f53866b084a00eee6a56e3b68d58fedb33c4480cd170d41fd5ba79c39e'
+            User-Agent: 'aws-sdk-php/3.32.6 GuzzleHttp/6.2.1 curl/7.47.0 PHP/7.1.6-1~ubuntu16.04.1+deb.sury.org+1'
+            Accept: null
+        body: 'Action=SendMessage&Version=2012-11-05&QueueUrl=https%3A%2F%2Fsqs.eu-central-1.amazonaws.com%2F925075006686%2FtestQueue1&MessageBody=%7B%22key1%22%3A%22value1%22%2C%22key2%22%3A%22value2%22%7D'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Server
+            Date: 'Fri, 11 Aug 2017 17:57:20 GMT'
+            Content-Type: text/xml
+            Content-Length: '378'
+            Connection: keep-alive
+            x-amzn-RequestId: 584723bf-d1e0-525a-93f3-71b823a0c451
+        body: '<?xml version="1.0"?><SendMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageResult><MessageId>105da437-8fc5-49c7-b238-8268caca3213</MessageId><MD5OfMessageBody>ff45cc3835165307ef414c23ca2c6f67</MD5OfMessageBody></SendMessageResult><ResponseMetadata><RequestId>584723bf-d1e0-525a-93f3-71b823a0c451</RequestId></ResponseMetadata></SendMessageResponse>'
