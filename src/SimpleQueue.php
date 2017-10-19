@@ -151,14 +151,16 @@ class SimpleQueue
      * Gets a pending message for an specific queue.
      *
      * @param string $taskName the name of the queue for which you want to get one message
+     * @param array $options options to be passed to receiveMessage method (it may include ReceiveMessages and WaitTimeSeconds for long polling)
      * @return \Aws\Result|false
      * @see http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.Sqs.SqsClient.html#_receiveMessage
      */
-    public function receiveMessage($taskName)
+    public function receiveMessage($taskName, $options = [])
     {
         $url = $this->queueUrl($taskName);
 
-        return $this->client()->receiveMessage(['QueueUrl' => $url]);
+        $options['QueueUrl'] = $url;
+        return $this->client()->receiveMessage($options);
     }
 
     /**
