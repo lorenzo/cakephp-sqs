@@ -1,0 +1,30 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sqs.eu-central-1.amazonaws.com/925075006686/testQueue1'
+        headers:
+            Host: sqs.eu-central-1.amazonaws.com
+            Expect: null
+            Accept-Encoding: null
+            Content-Type: application/x-www-form-urlencoded
+            aws-sdk-invocation-id: 281cdcbee028b4cf7030653be0c6f46f
+            aws-sdk-retry: 0/0
+            X-Amz-Date: 20170811T181901Z
+            Authorization: 'AWS4-HMAC-SHA256 Credential=SOMEKEY/20170811/eu-central-1/sqs/aws4_request, SignedHeaders=aws-sdk-invocation-id;aws-sdk-retry;host;x-amz-date, Signature=d1315a63b162181209b8da82937d5754e4ede78de5e00cbcc2a39cb031d7c79e'
+            User-Agent: 'aws-sdk-php/3.32.6 GuzzleHttp/6.2.1 curl/7.47.0 PHP/7.1.6-1~ubuntu16.04.1+deb.sury.org+1'
+            Accept: null
+        body: 'Action=ReceiveMessage&Version=2012-11-05&QueueUrl=https%3A%2F%2Fsqs.eu-central-1.amazonaws.com%2F925075006686%2FtestQueue1'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Server
+            Date: 'Fri, 11 Aug 2017 18:19:06 GMT'
+            Content-Type: text/xml
+            Content-Length: '924'
+            Connection: keep-alive
+            x-amzn-RequestId: a2f625cc-6f96-583c-80b5-77cb98cc3771
+        body: '<?xml version="1.0"?><ReceiveMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><ReceiveMessageResult><Message><MessageId>929a9cfe-0d45-494c-80fc-41ec6e2e017d</MessageId><ReceiptHandle>AQEBEYj8zzBaKn8PpJiHgvyznyo7H0BQYH7MBy7429K/ad53lXLRh5yu2Yb0EH9o22WskOCTX7enwcGxTc7JQLQPcJwFwJB/L29pVOyDvZc8fI2XPjd+7jbN91H6PqfHUUsryiDHkA36ZH0tWKjFOVt986GKptqdON+BbinT2KIjd5NLwN2sr7kWgWKhva6YSC/BIWTsSUyAfiFGRDLksNtMiXJk2nFzwvINGU7khBdDpZ0xZxmhhPvT3TPQeSukZNEp859yZLVA9t69Vx2Rrtf/3vGfZj9NjSVrEMcquP8zDrmIicp5+ILtm1qYJxq2lsYH0LHTwGtIQC1nW+J7D/t3JAFZdgohsdXEl3T+KIig2APUgJz4Mp/ze3gzIrY7/Y+plII+MnrISdBSmDnoRRpF/g==</ReceiptHandle><MD5OfBody>ff45cc3835165307ef414c23ca2c6f67</MD5OfBody><Body>{&quot;key1&quot;:&quot;value1&quot;,&quot;key2&quot;:&quot;value2&quot;}</Body></Message></ReceiveMessageResult><ResponseMetadata><RequestId>a2f625cc-6f96-583c-80b5-77cb98cc3771</RequestId></ResponseMetadata></ReceiveMessageResponse>'

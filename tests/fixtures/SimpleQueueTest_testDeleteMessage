@@ -1,0 +1,30 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sqs.eu-central-1.amazonaws.com/925075006686/testQueue1'
+        headers:
+            Host: sqs.eu-central-1.amazonaws.com
+            Expect: null
+            Accept-Encoding: null
+            Content-Type: application/x-www-form-urlencoded
+            aws-sdk-invocation-id: 5b8a49ff123792092e89fd13d3340878
+            aws-sdk-retry: 0/0
+            X-Amz-Date: 20170811T183740Z
+            Authorization: 'AWS4-HMAC-SHA256 Credential=SOMEKEY/20170811/eu-central-1/sqs/aws4_request, SignedHeaders=aws-sdk-invocation-id;aws-sdk-retry;host;x-amz-date, Signature=e0d9ee105f1c641ff579c548a99512b6d30a3f4415c9e390a1571b2f4c432ef7'
+            User-Agent: 'aws-sdk-php/3.32.6 GuzzleHttp/6.2.1 curl/7.47.0 PHP/7.1.6-1~ubuntu16.04.1+deb.sury.org+1'
+            Accept: null
+        body: 'Action=DeleteMessage&Version=2012-11-05&QueueUrl=https%3A%2F%2Fsqs.eu-central-1.amazonaws.com%2F925075006686%2FtestQueue1&ReceiptHandle=AQEBq%2BH6ahm2aPuY5CfsGCFvHMXkyfAGFxLENt05KyxdJ4d7dOzk72HmWIr9HDvMHVwR2QDCvSTr2L9UjSDpjArj4sbnTKVG5RTuSX%2FLM7D5k5haVf9rQZEQmiqzAXpgpXINDIwSHmOmtrUXavlD%2BtcPDIgb7b8azopfiA00GvTOk24TGe%2F7FHj7KACcwm%2FptoXqeNKZ%2FKMUA5DfI7Oaqc6ra%2B%2FN%2F99phj17yWbA6UPQEo5IGXMDI%2BTLsm6NQa7OqcFvw6JrYdbFCJboX61tYOKGn3u47ahUDY%2FYIMJTH%2FGVALuSHSzMGmZOgys6xzl95HQDmCqPnA2UN1VE1RmxYOm2beXQredSVu1TqgnaQlLIv5Y1%2FE9IElJJPN2ADqhGLZZyM9Vjp8uG9FQP67VL11HSIQ%3D%3D'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Server
+            Date: 'Fri, 11 Aug 2017 18:37:45 GMT'
+            Content-Type: text/xml
+            Content-Length: '215'
+            Connection: keep-alive
+            x-amzn-RequestId: 864e1bed-24ef-5e94-8e4b-49eadf562d1f
+        body: '<?xml version="1.0"?><DeleteMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><ResponseMetadata><RequestId>864e1bed-24ef-5e94-8e4b-49eadf562d1f</RequestId></ResponseMetadata></DeleteMessageResponse>'

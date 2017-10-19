@@ -1,0 +1,30 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sqs.eu-central-1.amazonaws.com/925075006686/testQueue1'
+        headers:
+            Host: sqs.eu-central-1.amazonaws.com
+            Expect: null
+            Accept-Encoding: null
+            Content-Type: application/x-www-form-urlencoded
+            aws-sdk-invocation-id: 5fe5aad42b6a3b510195b7e5ed0babd5
+            aws-sdk-retry: 0/0
+            X-Amz-Date: 20170811T180259Z
+            Authorization: 'AWS4-HMAC-SHA256 Credential=SOMEKEY/20170811/eu-central-1/sqs/aws4_request, SignedHeaders=aws-sdk-invocation-id;aws-sdk-retry;host;x-amz-date, Signature=4703281d2e79eb960182a483e2a37a7956458fe267acdb037625f6a94a57b9d5'
+            User-Agent: 'aws-sdk-php/3.32.6 GuzzleHttp/6.2.1 curl/7.47.0 PHP/7.1.6-1~ubuntu16.04.1+deb.sury.org+1'
+            Accept: null
+        body: 'Action=SendMessageBatch&Version=2012-11-05&QueueUrl=https%3A%2F%2Fsqs.eu-central-1.amazonaws.com%2F925075006686%2FtestQueue1&SendMessageBatchRequestEntry.1.Id=a&SendMessageBatchRequestEntry.1.MessageBody=%7B%22message1%22%3A%22value1%22%7D&SendMessageBatchRequestEntry.2.Id=a1&SendMessageBatchRequestEntry.2.MessageBody=%7B%22message3%22%3A%22value2%22%7D'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Server
+            Date: 'Fri, 11 Aug 2017 18:03:05 GMT'
+            Content-Type: text/xml
+            Content-Length: '665'
+            Connection: keep-alive
+            x-amzn-RequestId: f3fdd08f-e4cc-5607-b735-828817554589
+        body: '<?xml version="1.0"?><SendMessageBatchResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageBatchResult><SendMessageBatchResultEntry><Id>a</Id><MessageId>88fa7c44-aa3c-49de-8433-60a2613d1b94</MessageId><MD5OfMessageBody>caa36fef90e1c60cc304f54fff8ae68c</MD5OfMessageBody></SendMessageBatchResultEntry><SendMessageBatchResultEntry><Id>a1</Id><MessageId>f092f894-9c87-4c7f-9f3a-0b3598882f6d</MessageId><MD5OfMessageBody>ac3a76e6c8807786ac72c7ccdc794721</MD5OfMessageBody></SendMessageBatchResultEntry></SendMessageBatchResult><ResponseMetadata><RequestId>f3fdd08f-e4cc-5607-b735-828817554589</RequestId></ResponseMetadata></SendMessageBatchResponse>'
