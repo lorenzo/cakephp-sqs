@@ -145,7 +145,10 @@ class QueueWorkerTask extends Shell
     protected function _work($name, $job)
     {
         foreach ($job->get('Messages') as $message) {
-            $data = json_decode($message['Body'], true);
+            $data = [
+                'Body' => json_decode($message['Body'], true),
+                'MessageAttributes' => $message['MessageAttributes']
+            ];
             $return = call_user_func($this->callbacks[$name], $data, $message['ReceiptHandle']);
             if ($return === true) {
                 $this->getSimpleQueue()->deleteMessage($name, $message['ReceiptHandle']);

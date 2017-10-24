@@ -160,6 +160,7 @@ class SimpleQueue
         $url = $this->queueUrl($taskName);
 
         $options['QueueUrl'] = $url;
+        $options['MessageAttributeNames'] = ['All'];
         return $this->client()->receiveMessage($options);
     }
 
