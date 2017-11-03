@@ -69,6 +69,7 @@ class QueueWorkerTask extends Shell
                 $i++;
             }
         }
+        $this->log(sprintf("Finished %s worker", $name), 'info', 'sqs');
     }
 
     /**
