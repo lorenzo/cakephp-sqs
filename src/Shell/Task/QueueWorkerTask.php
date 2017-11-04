@@ -50,7 +50,8 @@ class QueueWorkerTask extends Shell
         $this->log(sprintf("Starting %s worker", $name), 'info', 'sqs');
         $simpleQueue = $this->getSimpleQueue();
         $i = 0;
-        while ($i < $iterations) {
+        $infinite_loop = ($iterations == -1);
+        while (($i < $iterations) || $infinite_loop) {
             foreach ($this->callbacks as $queue => $callback) {
                 if (!$this->_triggerEvent('Queue.beforeWork')) {
                     break 2;
