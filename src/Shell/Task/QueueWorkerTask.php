@@ -35,6 +35,13 @@ class QueueWorkerTask extends Shell
     protected $callbacks = [];
 
     /**
+     * Exit signal
+     *
+     * @var bool
+     */
+    private $exit = false;
+
+    /**
      * Read the queue and process messages, this work process will block for a number of
      * iterations, so can set this work process to last forever setting the $iterations param
      * to -1, we don't recommend this, but set a fixed amount of iterations, and restart the
@@ -48,6 +55,13 @@ class QueueWorkerTask extends Shell
     public function work($name = 'default', $iterations = self::MAX_MESSAGES_PROCESSED)
     {
         $this->log(sprintf("Starting %s worker", $name), 'info', 'sqs');
+
+        if (function_exists('pcntl_signal')) {
+            pcntl_signal(SIGHUP, function () {
+                $this->exit = true;
+            });
+        }
+
         $simpleQueue = $this->getSimpleQueue();
         $i = 0;
         $infinite_loop = ($iterations == -1);
@@ -68,6 +82,15 @@ class QueueWorkerTask extends Shell
             }
             if ($iterations > -1) {
                 $i++;
+            }
+
+            if (function_exists('pcntl_signal_dispatch')) {
+                pcntl_signal_dispatch();
+            }
+
+            if ($this->exit == true) {
+                $this->log(sprintf("SIGHUP Received in iteration %d of %d", $i, $iterations), 'info', 'sqs');
+                break 1;
             }
         }
         $this->log(sprintf("Finished %s worker", $name), 'info', 'sqs');
