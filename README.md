@@ -161,3 +161,9 @@ messages are received from a set of queues in CakeSQS. This is an example
 The functions registered to handle jobs will receive the message body from the queue after decoding it using `json_decode`.
 
 IMPORTANT: return true to delete the message upon processing, false to leave the message in the queue and re - process later
+
+## Kill worker softly with SIGHUP
+
+To kill a long lived worker shell in the middle of the iterations loop, you can send SIGHUP by calling `kill -1 PID` on the commandline (PID is the process Id of your running worker shell).
+
+This will cause the current iteration to finish and stop the worker afterwards.
