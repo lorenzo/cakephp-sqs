@@ -42,7 +42,7 @@ The plugin expects the following configuration data in the Configure keys:
             'region' => 'eu-central-1' // must match the region where the sqs queue was created
         ],
         'queues' => [
-            'queues.testQueue1' => 'sqs queue url, for example: https://sqs.eu-central-1.amazonaws.com/12345/someQueue'
+            'testQueue1' => 'sqs queue url, for example: https://sqs.eu-central-1.amazonaws.com/12345/someQueue'
         ]
     ]);
 
