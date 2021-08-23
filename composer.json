@@ -1,5 +1,5 @@
 {
-    "name": "lorenzo/cakephp-sqs",
+    "name": "rickhaasteren/cakephp-sqs",
     "description": "CakePHP Aws Simple Queue System",
     "type": "cakephp-plugin",
     "keywords": ["cakephp", "queue", "aws", "sqs"],
@@ -9,10 +9,14 @@
         {
             "name": "José Lorenzo Rodríguez",
             "role": "Author"
+        },
+          {
+            "name": "Rick van Haasteren",
+            "role": "Contributor"
         }
     ],
     "require": {
         "composer/installers": "*",
-        "aws/aws-sdk-php": "2.*"
+        "aws/aws-sdk-php": "3.*"
     }
 }
