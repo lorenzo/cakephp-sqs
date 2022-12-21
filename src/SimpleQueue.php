@@ -26,7 +26,11 @@ class SimpleQueue
                 'secret' => 'Your amazon secret',
             ],
             'version' => '2012-11-05',
-            'region' => 'eu-central-1' // must match the region where the sqs queue was created
+            'region' => 'eu-central-1', // must match the region where the sqs queue was created
+            'http' => [
+                'connect_timeout' => 5, //Default value in AWS SDK is 0 and will never timeout
+                'timeout' => 30, //Default value in AWS SDK is 0 and will never timeout - has to be >= the queues' ReceiveMessageWaitTimeSeconds option
+            ]
         ],
         'queues' => [
             // sqs queue urls, for example: https://sqs.eu-central-1.amazonaws.com/12345/someQueue
